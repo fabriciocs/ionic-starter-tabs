@@ -1,0 +1,12 @@
+{
+  "name": "FluidAnalysis",
+  "app_id": "",
+  "gulpStartupTasks": [
+    "dist",
+    "watch"
+  ],
+  "watchPatterns": [
+    "www/**/*",
+    "!www/lib/**/*"
+  ]
+}

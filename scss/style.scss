@@ -1,0 +1,16 @@
+/* Empty. Add your own CSS if you like */
+
+$royal:     #9b59b6 !default;
+$assertive: #f26065 !default;
+$balanced:  #2ecc71 !default;
+$positive:  #3498db !default;
+$energized: #f1c40f !default;
+$stable:    #eff1ee !default;
+$dark:      #34495e !default;
+
+$base-background-color: $stable !default;
+
+.search-field{
+    background: url(../img/home-start-bg.png) repeat-x center center;    
+    background-size: cover;
+}

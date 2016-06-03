@@ -1,0 +1,10 @@
+{
+  "name": "FluidAnalysis",
+  "private": "true",
+  "devDependencies": {},
+  "dependencies": {
+    "ngCordova": "*",
+    "ng-database": "*",
+    "firebase": "~3.0.3"
+  }
+}
