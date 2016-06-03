@@ -1,5 +1,5 @@
 {
-  "name": "FluidAnalysis",
+  "name": "Avengers",
   "app_id": "",
   "gulpStartupTasks": [
     "dist",
@@ -8,5 +8,11 @@
   "watchPatterns": [
     "www/**/*",
     "!www/lib/**/*"
-  ]
+  ],
+  "proxies": [
+      {
+        "path": "v1/public/",
+        "proxyUrl": " http://gateway.marvel.com:80/v1/public/"
+      }
+    ]
 }

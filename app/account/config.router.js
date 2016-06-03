@@ -13,7 +13,7 @@
                 url: '/account',
                 views: {
                     'tab-account': {
-                        templateUrl: 'account/tab-account.html',
+                        templateUrl: 'account/account.html',
                         controller: 'Account',
                         controllerAs: 'vm'
                     }

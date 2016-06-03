@@ -12,16 +12,15 @@
         $ionicConfigProvider.platform.ios.backButton.text('Voltar');
         $ionicConfigProvider.backButton.previousTitleText(false);
 
-        var chatsRepository = {
+        var avengersCastRepository = {
             id: 'ID',
             name: 'STRING',
-            lastText: 'STRING',
-            face: 'STRING'
+            character: 'STRING'
         };
 
-        ngdbProvider.setRepository('chats', chatsRepository)
+        ngdbProvider.setRepository('avengers', avengersCastRepository)
 
-        $urlRouterProvider.otherwise('/tab/dash');
+        $urlRouterProvider.otherwise('/tab/dashboard');
 
 
     }

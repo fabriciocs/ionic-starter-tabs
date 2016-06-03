@@ -1,0 +1,22 @@
+{
+    "sass": [
+        "./scss/**/*.scss"
+    ],
+    "components": [
+        "./bower_components/**/*.js",
+        "./bower_components/**/*.css",
+        "./bower_components/**/*.scss"
+    ],
+    "scripts": [
+        "./app/*.js",
+        "./app/**/*module*.js",
+        "./app/**/*.js"
+    ],
+    "assets": [
+        "./app/assets/**"
+    ],
+    "templates": [
+        "!./app/index.html",
+        "./app/**/*.html"
+    ]
+}

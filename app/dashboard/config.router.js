@@ -13,7 +13,7 @@
                 url: '/dashboard',
                 views: {
                     'tab-dashboard': {
-                        templateUrl: 'dashboard/tab-dashboard.html',
+                        templateUrl: 'dashboard/dashboard.html',
                         controller: 'Dashboard',
                         controllerAs: 'vm'
                     }

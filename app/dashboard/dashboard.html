@@ -1,0 +1,52 @@
+<ion-view view-title="{{vm.title}}">
+    <ion-content>
+        <div class="row">
+            <div class="col">
+                <ul>
+                    <li>
+                        <div class="text-center">
+                            <span class="bold">Stark Tower</span> New York, New York
+                        </div>
+                    </li>
+
+                    <li>
+                        <div class="text-center">
+                            <span class="bold">{{vm.avengerCount}}</span> Cast
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div>
+                    <div data-cc-widget-header title="Avengers Movie Cast" allow-collapse="true"></div>
+                    <div class="text-left">
+                        <table>
+                            <thead>
+                                <tr class="row">
+                                    <th class="col">Name</th>
+                                    <th class="col">Character</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="row" data-ng-repeat="a in vm.avengers">
+                                    <td class="col"><small>{{a.name}}</small></td>
+                                    <td class="col"><small>{{a.character}}</small></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div data-cc-widget-header title="{{vm.news.title}}" allow-collapse="true"></div>
+                <div class="text-center">
+                    <small>{{vm.news.description}}</small>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+</ion-view>

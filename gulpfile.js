@@ -11,22 +11,13 @@ var es = require('event-stream');
 var lazypipe = require('lazypipe');
 var g = require('gulp-load-plugins')({ lazy: false });
 
+var paths = require('./gulp.config.json');
+var package = require('./package.json');
+
 var minifyHtml = require("gulp-minify-html");
 var ngHtml2Js = require("gulp-ng-html2js");
 
-
-
 var noop = g.util.noop;
-
-bower.name = "fluidanalysis";
-
-var paths = {
-    sass: ['./scss/**/*.scss'],
-    components: ['./bower_components/**/*.js', './bower_components/**/*.css', './bower_components/**/*.scss'],
-    scripts: ['./app/*.js', './app/**/*module*.js', './app/**/*.js'],
-    assets: ['./app/assets/**'],
-    templates: ['!./app/index.html', './app/**/*.html']
-};
 
 gulp.watch(paths.sass, ['sass']);
 gulp.watch(paths.components, ['components']);
@@ -40,12 +31,12 @@ gulp.task('sass', function (done) {
     gulp.src('./scss/ionic.app.scss')
         .pipe(g.sass())
         .on('error', sass.logError)
-        .pipe(g.rename(bower.name + '.css'))
+        .pipe(g.rename(package.name + '.css'))
         .pipe(gulp.dest('./www/css/'))
         .pipe(g.minifyCss({
             keepSpecialComments: 0
         }))
-        .pipe(g.rename(bower.name + '.min.css'))
+        .pipe(g.rename(package.name + '.min.css'))
         .pipe(gulp.dest('./www/css/'))
         .on('end', done);
 });
@@ -65,9 +56,9 @@ gulp.task('components', function () {
  * Scripts
  */
 gulp.task('scripts', function () {
-    console.log(bower.name)
+    console.log(package.name)
     return gulp.src(paths.scripts)
-        .pipe(dist('js', bower.name, { ngAnnotate: false }));
+        .pipe(dist('js', package.name, { ngAnnotate: false }));
 });
 
 /**
@@ -125,13 +116,13 @@ gulp.task('dist', ['sass', 'components', 'scripts', 'assets', 'templates'], func
             addPrefix: ''
         }))
 
-        .pipe(g.inject(gulp.src('./www/css/' + bower.name + '.min.css'), {
+        .pipe(g.inject(gulp.src('./www/css/' + package.name + '.min.css'), {
             ignorePath: 'www',
             addRootSlash: false,
             addPrefix: ''
         }))
 
-        .pipe(g.inject(gulp.src('./www/js/' + bower.name + '.min.js'), {
+        .pipe(g.inject(gulp.src('./www/js/' + package.name + '.min.js'), {
             ignorePath: 'www',
             addRootSlash: false,
             addPrefix: ''

@@ -8,9 +8,8 @@
     function Account() {
         var vm = this;
 
-        vm.settings = {
-            enableFriends: true
-        };
+        activate();
 
+        function activate() { }
     }
 })();

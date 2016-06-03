@@ -2,19 +2,19 @@
     'use strict';
 
     angular
-        .module('app.notification')
+        .module('app.account')
         .config(Configure);
 
     Configure.$inject = ['$stateProvider'];
 
     function Configure($stateProvider) {
         $stateProvider
-            .state('tab.settings-notification', {
-                url: '/settings/notification',
+            .state('tab.account-auth', {
+                url: '/account/auth',
                 views: {
-                    'tab-settings': {
-                        templateUrl: 'notification/notification.html',
-                        controller: 'Notification',
+                    'tab-account': {
+                        templateUrl: 'auth/auth.html',
+                        controller: 'Auth',
                         controllerAs: 'vm'
                     }
                 }

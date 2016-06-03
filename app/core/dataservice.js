@@ -5,8 +5,8 @@
         .module('app.core')
         .factory('dataservice', dataservice);
 
-    dataservice.$inject = ['$http', '$location', '$q', 'exception'];
-    function dataservice($http, $location, $q, exception) {
+    dataservice.$inject = ['$http', '$state', '$q', 'exception'];
+    function dataservice($http, $state, $q, exception) {
 
         var isPrimed = false;
         var primePromise;
@@ -21,15 +21,15 @@
         return service;
 
         function getAvengers() {
-            return $http.get('/api/maa')
+            return $http.get('avengers.json')
                 .then(getAvengersComplete)
                 .catch(function (message) {
                     exception.catcher('XHR Failed for getAvengers')(message);
-                    $location.url('/');
+                    $state.go('/tab/dashboard');
                 });
 
-            function getAvengersComplete(data, status, headers, config) {
-                return data.data[0].data.results;
+            function getAvengersComplete(results, status, headers, config) {
+                return results.data.cast;
             }
         }
 

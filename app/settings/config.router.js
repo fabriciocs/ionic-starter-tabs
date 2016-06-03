@@ -2,19 +2,19 @@
     'use strict';
 
     angular
-        .module('app.notification')
+        .module('app.settings')
         .config(Configure);
 
     Configure.$inject = ['$stateProvider'];
 
     function Configure($stateProvider) {
         $stateProvider
-            .state('tab.settings-notification', {
-                url: '/settings/notification',
+            .state('tab.settings', {
+                url: '/settings',
                 views: {
                     'tab-settings': {
-                        templateUrl: 'notification/notification.html',
-                        controller: 'Notification',
+                        templateUrl: 'settings/settings.html',
+                        controller: 'Settings',
                         controllerAs: 'vm'
                     }
                 }

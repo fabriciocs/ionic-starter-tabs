@@ -9,7 +9,7 @@
         'app.dashboard',
         'app.layout',
         'app.notification',
-        'app.sample',
-        'app.setting'
+        'app.avengers',
+        'app.settings'
     ]);
 })();

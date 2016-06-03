@@ -1,10 +1,9 @@
 {
-  "name": "FluidAnalysis",
+  "name": "Avengers",
   "private": "true",
   "devDependencies": {},
   "dependencies": {
     "ngCordova": "*",
-    "ng-database": "*",
-    "firebase": "~3.0.3"
+    "ng-database": "*"
   }
 }

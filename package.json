@@ -1,7 +1,7 @@
 {
-  "name": "fluidanalysis",
-  "version": "1.1.1",
-  "description": "FluidAnalysis: An Ionic project and sqlite",
+  "name": "avengers",
+  "version": "0.0.1",
+  "description": "Avengers: An Ionic project and sqlite",
   "dependencies": {
     "gulp": "^3.5.6",
     "gulp-concat": "^2.2.0",
@@ -36,7 +36,8 @@
     "cordova-plugin-whitelist",
     "cordova-plugin-splashscreen",
     "cordova-plugin-statusbar",
-    "ionic-plugin-keyboard"
+    "ionic-plugin-keyboard",
+    "cordova-sqlite-storage"
   ],
   "cordovaPlatforms": [
     "android",
