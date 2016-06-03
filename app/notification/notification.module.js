@@ -1,7 +1,5 @@
 (function () {
     'use strict';
 
-    angular.module('app.notification', [
-
-    ]);
+    angular.module('app.notification', []);
 })();

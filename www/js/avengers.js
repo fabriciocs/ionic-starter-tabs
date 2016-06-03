@@ -26,9 +26,7 @@
 (function () {
     'use strict';
 
-    angular.module('app.avengers', [
-
-    ]);
+    angular.module('app.avengers', []);
 })();
 (function () {
     'use strict';
@@ -48,23 +46,17 @@
 (function() {
     'use strict';
 
-    angular.module('app.layout', [
-        
-    ]);
+    angular.module('app.layout', []);
 })();
 (function () {
     'use strict';
 
-    angular.module('app.notification', [
-
-    ]);
+    angular.module('app.settings', []);
 })();
 (function () {
     'use strict';
 
-    angular.module('app.settings', [
-
-    ]);
+    angular.module('app.notification', []);
 })();
 (function () {
     'use strict';
@@ -452,46 +444,6 @@
     'use strict';
 
     angular
-        .module('app.notification')
-        .config(Configure);
-
-    Configure.$inject = ['$stateProvider'];
-
-    function Configure($stateProvider) {
-        $stateProvider
-            .state('tab.settings-notification', {
-                url: '/settings/notification',
-                views: {
-                    'tab-settings': {
-                        templateUrl: 'notification/notification.html',
-                        controller: 'Notification',
-                        controllerAs: 'vm'
-                    }
-                }
-            });
-    }
-
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.notification')
-        .controller('Notification', Notification);
-
-    Notification.$inject = ['$scope'];
-    function Notification($scope) {
-        var vm = this;
-
-        activate();
-
-        function activate() { }
-    }
-})();
-(function () {
-    'use strict';
-
-    angular
         .module('app.settings')
         .config(Configure);
 
@@ -521,6 +473,46 @@
 
     Settings.$inject = ['$scope'];
     function Settings($scope) {
+        var vm = this;
+
+        activate();
+
+        function activate() { }
+    }
+})();
+(function () {
+    'use strict';
+
+    angular
+        .module('app.notification')
+        .config(Configure);
+
+    Configure.$inject = ['$stateProvider'];
+
+    function Configure($stateProvider) {
+        $stateProvider
+            .state('tab.settings-notification', {
+                url: '/settings/notification',
+                views: {
+                    'tab-settings': {
+                        templateUrl: 'notification/notification.html',
+                        controller: 'Notification',
+                        controllerAs: 'vm'
+                    }
+                }
+            });
+    }
+
+})();
+(function () {
+    'use strict';
+
+    angular
+        .module('app.notification')
+        .controller('Notification', Notification);
+
+    Notification.$inject = ['$scope'];
+    function Notification($scope) {
         var vm = this;
 
         activate();
