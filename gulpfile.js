@@ -10,12 +10,11 @@ var sh = require('shelljs');
 var es = require('event-stream');
 var lazypipe = require('lazypipe');
 var g = require('gulp-load-plugins')({ lazy: false });
+var minifyHtml = require("gulp-minify-html");
+var ngHtml2Js = require("gulp-ng-html2js");
 
 var paths = require('./gulp.config.json');
 var package = require('./package.json');
-
-var minifyHtml = require("gulp-minify-html");
-var ngHtml2Js = require("gulp-ng-html2js");
 
 var noop = g.util.noop;
 

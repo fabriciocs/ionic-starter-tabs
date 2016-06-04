@@ -1,6 +1,6 @@
 {
-  "name": "Avengers",
-  "private": "true",
+  "name": "avengers",
+  "private": true,
   "devDependencies": {},
   "dependencies": {
     "ngCordova": "*",
