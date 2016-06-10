@@ -33,11 +33,12 @@
 
     angular
         .module('app.core', [
-            'ngCordova', 'ngDatabase',
-            'blocks.exception'
+            'ngCordova', 'firebase',
+            'blocks.exception','ngCordovaOauth'
         ]);
 
 })();
+
 (function () {
     'use strict';
 
@@ -51,12 +52,12 @@
 (function () {
     'use strict';
 
-    angular.module('app.settings', []);
+    angular.module('app.notification', []);
 })();
 (function () {
     'use strict';
 
-    angular.module('app.notification', []);
+    angular.module('app.settings', []);
 })();
 (function () {
     'use strict';
@@ -103,21 +104,60 @@
 
 })();
 (function () {
-    'use strict';
+  'use strict';
 
-    angular
-        .module('app.auth')
-        .controller('Auth', Auth);
+  angular
+    .module('app.auth')
+    .service('AuthService', AuthService);
 
-    Auth.$inject = ['$scope'];
-    function Auth($scope) {
-        var vm = this;
-
-        activate();
-
-        function activate() { }
+  AuthService.$inject = ['$firebaseAuth'];
+  function AuthService($firebaseAuth) {
+    var auth = $firebaseAuth();
+    return {
+      ref : function(){return auth}
     }
+  }
 })();
+
+(function () {
+  'use strict';
+
+  angular
+    .module('app.auth')
+    .controller('Auth', Auth);
+
+  Auth.$inject = ['$state', '$firebaseAuth','FIREBASE_CONFIG','$cordovaOauth'];
+  function Auth($state, $firebaseAuth, FIREBASE_CONFIG, $cordovaOauth) {
+    var vm = this;
+    var auth = $firebaseAuth();
+    vm.signIn = signIn;
+
+
+    activate();
+    function activate() {
+    }
+
+    function signIn() {
+      vm.firebaseUser = null;
+      vm.error = null;
+      $cordovaOauth.google(FIREBASE_CONFIG.clientId, ["email"]).then(function(result) {
+        var credential = firebase.auth.GoogleAuthProvider.credential(result.id_token);
+        auth.$signInWithCredential(credential).then(function(firebaseUser) {
+          vm.firebaseUser = firebaseUser;
+          $state.transitionTo('tab.avengers');
+        }).catch(function(error) {
+          vm.error = error;
+          console.log(error);
+        });
+      }, function(error) {
+        m.error = error;
+        console.log("Error -> " + error);
+      });
+      /**/
+    }
+  }
+})();
+
 (function () {
     'use strict';
 
@@ -149,12 +189,13 @@
         .module('app.avengers')
         .controller('Avengers', Avengers);
 
-    Avengers.$inject = ['dataservice'];
-    function Avengers(dataservice) {
+    Avengers.$inject = ['dataservice','currentAuth'];
+    function Avengers(dataservice, currentAuth) {
         var vm = this;
         vm.avengers = [];
-        vm.title = 'Avengers';
-      
+        vm.title = JSON.stringify(currentAuth);
+
+
         activate();
 
         function activate() {
@@ -162,76 +203,79 @@
                 console.info('Activated Avengers View');
             });
         }
-        
+
         function getAvengers() {
             return dataservice.getAvengers().then(function(data) {
                 vm.avengers = data;
                 return vm.avengers;
             });
         }
-        
+
     }
 })();
+
 (function () {
-    'use strict';
+  'use strict';
 
-    angular
-        .module('app.avengers')
-        .config(Configure);
+  angular
+    .module('app.avengers')
+    .config(Configure);
 
-    Configure.$inject = ['$stateProvider'];
+  Configure.$inject = ['$stateProvider'];
 
-    function Configure($stateProvider) {
-        $stateProvider
-            .state('tab.avengers', {
-                url: '/avengers',
-                views: {
-                    'tab-avengers': {
-                        templateUrl: 'avengers/avengers.html',
-                        controller: 'Avengers',
-                        controllerAs: 'vm'
-                    }
-                }
-            });
-    }
+  function Configure($stateProvider) {
+    $stateProvider
+      .state('tab.avengers', {
+        url: '/avengers',
+        views: {
+          'tab-avengers': {
+            templateUrl: 'avengers/avengers.html',
+            controller: 'Avengers',
+            controllerAs: 'vm'
+          }
+        }
+      });
+  }
 
 })();
+
 (function () {
     'use strict';
 
     angular.module('app.core')
         .config(Configure);
 
-    Configure.$inject = ['$ionicConfigProvider', '$urlRouterProvider', 'ngdbProvider'];
+    Configure.$inject = ['$ionicConfigProvider', '$urlRouterProvider'];
 
-    function Configure($ionicConfigProvider, $urlRouterProvider, ngdbProvider) {
+    function Configure($ionicConfigProvider, $urlRouterProvider) {
 
         $ionicConfigProvider.scrolling.jsScrolling(true);
         $ionicConfigProvider.platform.ios.backButton.text('Voltar');
         $ionicConfigProvider.backButton.previousTitleText(false);
-
-        var avengersCastRepository = {
-            id: 'ID',
-            name: 'STRING',
-            character: 'STRING'
-        };
-
-        ngdbProvider.setRepository('avengers', avengersCastRepository)
-
+      
         $urlRouterProvider.otherwise('/tab/dashboard');
 
 
     }
 
 })();
-(function () {
-    'use strict';
 
-    angular
-        .module('app.core')
-        .constant('API_URL', '')
-        .constant('APP_VERSION', '1.2.8');
+(function () {
+  'use strict';
+
+  angular
+    .module('app.core')
+    .constant('API_URL', '')
+    .constant('APP_VERSION', '1.2.8')
+    .constant('FIREBASE_CONFIG', {
+      clientId: '298632192699-tqh8c89o19v0i4cgb5ppa2cv3ek076mg.apps.googleusercontent.com',
+      apiKey: "AIzaSyCet6pxM64G1Y9vaRCEE1cJqorAnnuo1u8",
+      authDomain: "mais-cidadao-4ec99.firebaseapp.com",
+      databaseURL: "https://mais-cidadao-4ec99.firebaseio.com",
+      storageBucket: ""
+      })
 })();
+
 (function () {
     'use strict';
 
@@ -321,71 +365,87 @@
     }
 })();
 (function () {
-    'use strict';
+  'use strict';
 
-    angular
-        .module('app.core')
-        .run(Run);
+  angular
+    .module('app.core')
+    .run(Run);
 
-    Run.$inject = ['$ionicPlatform'];
+  Run.$inject = ['$ionicPlatform','FIREBASE_CONFIG','$rootScope','$state'];
 
-    function Run($ionicPlatform) {
-        var service = {
-            onReady: onReady
-        }
+  function Run($ionicPlatform, FIREBASE_CONFIG, $rootScope, $state) {
+    var service = {
+      onReady: onReady
+    };
 
-        $ionicPlatform.ready(
-            service.onReady()
-        );
+    $ionicPlatform.ready(
+      service.onReady()
+    );
 
-        return service;
+    $rootScope.$on("$stateChangeError", function(event, toState, toParams, fromState, fromParams, error) {
+      if (error === "AUTH_REQUIRED") {
+        console.log("runs", arguments);
+        $state.go("tab.account-auth", {}, {reload: true});
+      }
+    });
 
-        function onReady() {
-            if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
-                cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
-                cordova.plugins.Keyboard.disableScroll(true);
-            }
-            if (window.StatusBar) {
-                StatusBar.styleDefault();
-            }
-        }
+    return service;
+
+    function onReady() {
+      if (window.cordova && window.cordova.plugins && window.cordova.plugins.Keyboard) {
+        cordova.plugins.Keyboard.hideKeyboardAccessoryBar(true);
+        cordova.plugins.Keyboard.disableScroll(true);
+      }
+      if (window.StatusBar) {
+        StatusBar.styleDefault();
+      }
+      firebase.initializeApp(FIREBASE_CONFIG);
     }
+  }
 })();
+
 (function () {
-    'use strict';
+  'use strict';
 
-    angular
-        .module('app.dashboard')
-        .config(Configure);
+  angular
+    .module('app.dashboard')
+    .config(Configure);
 
-    Configure.$inject = ['$stateProvider'];
+  Configure.$inject = ['$stateProvider'];
 
-    function Configure($stateProvider) {
-        $stateProvider
-            .state('tab.dashboard', {
-                url: '/dashboard',
-                views: {
-                    'tab-dashboard': {
-                        templateUrl: 'dashboard/dashboard.html',
-                        controller: 'Dashboard',
-                        controllerAs: 'vm'
-                    }
-                }
-            })
-    }
+  function Configure($stateProvider) {
+    $stateProvider
+      .state('tab.dashboard', {
+        url: '/dashboard',
+        views: {
+          'tab-dashboard': {
+            templateUrl: 'dashboard/dashboard.html',
+            controller: 'Dashboard',
+            controllerAs: 'vm',
+            resolve: {
+              "currentAuth": ["AuthService", function(AuthService) {
+                return AuthService.ref().$requireSignIn();
+              }]
+            }
+          }
+        }
+      })
+  }
 
 })();
+
 (function () {
     'use strict';
 
     angular
         .module('app.dashboard')
         .controller('Dashboard', Dashboard);
-    
-    Dashboard.$inject = ['$q', 'dataservice'];
-    function Dashboard($q, dataservice) {
+
+    Dashboard.$inject = ['$q', 'dataservice','currentAuth'];
+    function Dashboard($q, dataservice, currentAuth) {
         var vm = this;
-        
+        console.log(currentAuth);
+
         vm.news = {
             title: 'Marvel Avengers',
             description: 'Marvel Avengers 2 is now in production!'
@@ -399,13 +459,11 @@
 
         function activate() {
             var promises = [getAvengerCount(), getAvengersCast()];
-//            Using a resolver on all routes or dataservice.ready in every controller
-//            return dataservice.ready(promises).then(function(){
             return $q.all(promises).then(function() {
                 console.info('Activated Dashboard View');
             });
         }
-        
+
         function getAvengerCount() {
             return dataservice.getAvengerCount().then(function(data) {
                 vm.avengerCount = data;
@@ -421,6 +479,7 @@
         }
     }
 })();
+
 (function () {
     'use strict';
 
@@ -439,46 +498,6 @@
             })
     }
 
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.settings')
-        .config(Configure);
-
-    Configure.$inject = ['$stateProvider'];
-
-    function Configure($stateProvider) {
-        $stateProvider
-            .state('tab.settings', {
-                url: '/settings',
-                views: {
-                    'tab-settings': {
-                        templateUrl: 'settings/settings.html',
-                        controller: 'Settings',
-                        controllerAs: 'vm'
-                    }
-                }
-            });
-    }
-
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.settings')
-        .controller('Settings', Settings);
-
-    Settings.$inject = ['$scope'];
-    function Settings($scope) {
-        var vm = this;
-
-        activate();
-
-        function activate() { }
-    }
 })();
 (function () {
     'use strict';
@@ -513,6 +532,46 @@
 
     Notification.$inject = ['$scope'];
     function Notification($scope) {
+        var vm = this;
+
+        activate();
+
+        function activate() { }
+    }
+})();
+(function () {
+    'use strict';
+
+    angular
+        .module('app.settings')
+        .config(Configure);
+
+    Configure.$inject = ['$stateProvider'];
+
+    function Configure($stateProvider) {
+        $stateProvider
+            .state('tab.settings', {
+                url: '/settings',
+                views: {
+                    'tab-settings': {
+                        templateUrl: 'settings/settings.html',
+                        controller: 'Settings',
+                        controllerAs: 'vm'
+                    }
+                }
+            });
+    }
+
+})();
+(function () {
+    'use strict';
+
+    angular
+        .module('app.settings')
+        .controller('Settings', Settings);
+
+    Settings.$inject = ['$scope'];
+    function Settings($scope) {
         var vm = this;
 
         activate();

@@ -5,12 +5,13 @@
         .module('app.avengers')
         .controller('Avengers', Avengers);
 
-    Avengers.$inject = ['dataservice'];
-    function Avengers(dataservice) {
+    Avengers.$inject = ['dataservice','currentAuth'];
+    function Avengers(dataservice, currentAuth) {
         var vm = this;
         vm.avengers = [];
-        vm.title = 'Avengers';
-      
+        vm.title = JSON.stringify(currentAuth);
+
+
         activate();
 
         function activate() {
@@ -18,13 +19,13 @@
                 console.info('Activated Avengers View');
             });
         }
-        
+
         function getAvengers() {
             return dataservice.getAvengers().then(function(data) {
                 vm.avengers = data;
                 return vm.avengers;
             });
         }
-        
+
     }
 })();

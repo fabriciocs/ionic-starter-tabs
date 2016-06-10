@@ -1,3 +1,12 @@
 <ion-view hide-back-button="true" view-title="Auth">
-    <ion-content> </ion-content>
+    <ion-content>
+
+      <div class="padding">
+        <button class="button button-block button-assertive" ng-click="vm.signIn()">
+          Google
+        </button>
+      </div>
+      <em>{{vm.firebaseUser | json}}</em>
+      <em>{{vm.error | json}}</em>
+    </ion-content>
 </ion-view>

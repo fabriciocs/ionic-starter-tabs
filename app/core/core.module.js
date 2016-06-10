@@ -3,8 +3,8 @@
 
     angular
         .module('app.core', [
-            'ngCordova', 'ngDatabase',
-            'blocks.exception'
+            'ngCordova', 'firebase',
+            'blocks.exception','ngCordovaOauth'
         ]);
 
 })();

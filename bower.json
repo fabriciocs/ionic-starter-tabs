@@ -1,9 +1,13 @@
 {
   "name": "avengers",
   "private": true,
-  "devDependencies": {},
+  "devDependencies": {
+    "angularfire": "^2.0.1"
+  },
   "dependencies": {
     "ngCordova": "*",
-    "ng-database": "*"
+    "angularfire": "^2.0.1",
+    "firebase": "^3.0.4",
+    "ng-cordova-oauth": "^0.2.8"
   }
 }
