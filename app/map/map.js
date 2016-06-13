@@ -5,14 +5,15 @@
     .module('app.map')
     .controller('Map', Map);
 
-  Map.$inject = ['$q', 'currentAuth','$ionicPlatform','$cordovaCamera','$cordovaGeolocation','GeolocationService', '$firebaseArray'];
-  function Map($q, currentAuth, $ionicPlatform, $cordovaCamera, $cordovaGeolocation, GeolocationService, $firebaseArray) {
+  Map.$inject = ['GeolocationService', '$firebaseArray','$ionicLoading'];
+  function Map(GeolocationService, $firebaseArray, $ionicLoading) {
 
 
     activate();
 
     function activate(){
-      GeolocationService.then(function(location){
+      $ionicLoading.show();
+      GeolocationService.get().then(function(location){
         var map = getMap(createLatLon(location.latLon.latitude, location.latLon.longitude));
         getList().$loaded().then(function(list){
           list.forEach(function (item){
@@ -23,9 +24,14 @@
               infoWindow.open(map, marker);
             });
           });
+          $ionicLoading.hide();
+        }).catch(function(err){
+          $ionicLoading.hide();
+          alert("Erro ao obter dados -> "+err.message);
         });
       }).catch(function(err){
-        console.log(err);
+        $ionicLoading.hide();
+        alert("Por favor, habilite a localização para continuar -> "+err.message);
       });
 
     }

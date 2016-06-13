@@ -5,57 +5,50 @@
     .module('app.dashboard')
     .controller('Dashboard', Dashboard);
 
-  Dashboard.$inject = ['$q', 'currentAuth','$ionicPlatform','$cordovaCamera','$cordovaGeolocation','GeolocationService', 'FirebaseService'];
-  function Dashboard($q, currentAuth, $ionicPlatform, $cordovaCamera, $cordovaGeolocation, GeolocationService, FirebaseService) {
+  Dashboard.$inject = ['$ionicPlatform','$cordovaCamera','GeolocationService', '$firebaseArray','$ionicLoading'];
+  function Dashboard($ionicPlatform, $cordovaCamera, GeolocationService, $firebaseArray, $ionicLoading) {
     var vm = this;
-
+    vm.title = "Enviar";
     vm.send = send;
     var latLon;
 
-    GeolocationService.then(function(location){
-      vm.title = location.address;
-      vm.address = location.address;
-      latLon= location.latLon;
-    }).catch(function(err){
-      console.log(err);
-    });
-
     function send(){
-      var ref = firebase.database().ref().child("notificacoes");
-      var list = FirebaseService.getArray(ref);
-      list.$add({
-        description : vm.descricao,
-        address: vm.address,
-        latLon: {
-          latitude: latLon.latitude,
-          longitude: latLon.longitude,
-          accuracy: latLon.accuracy
-        },
-        imageData : vm.imgURI
-      }).then(function(){
-        alert("Dados enviados com sucesso");
+      $ionicLoading.show();
+      GeolocationService.get().then(function(location){
+        vm.address = location.address;
+        latLon = location.latLon;
+        var ref = firebase.database().ref().child("notificacoes");
+        var list = $firebaseArray(ref);
+        list.$add({
+          description : vm.descricao,
+          address: vm.address,
+          latLon: {
+            latitude: latLon.latitude,
+            longitude: latLon.longitude,
+            accuracy: latLon.accuracy
+          },
+          imageData : vm.imgURI
+        }).then(function(){
+          $ionicLoading.hide();
+          alert("Dados enviados com sucesso");
+          vm.descricao = "";
+          vm.address = "";
+          vm.imgURI = null;
+        }).catch(function(err){
+          $ionicLoading.hide();
+          alert("Erro ao enviar os dados -> "+err.message);
+        });
       }).catch(function(err){
-        alert("Erro: "+err.Message);
-        console.log(err);
+        $ionicLoading.hide();
+        alert("Por favor, habilite a localização para continuar -> "+err.message);
       });
     }
 
-    $ionicPlatform.ready(function(){
-      vm.takePicture = takePicture;
-      vm.getCurrentPosition = getCurrentPosition;
-      function getCurrentPosition() {
-        var posOptions = {timeout: 10000, enableHighAccuracy: false};
-        $cordovaGeolocation
-          .getCurrentPosition(posOptions)
-          .then(function (position) {
-            vm.lat = position.coords.latitude;
-            vm.long = position.coords.longitude
-          }, function (err) {
-            alert("Não foi possível obter a localização");
-          });
-      }
+    vm.takePicture = takePicture;
 
-      function takePicture() {
+    function takePicture() {
+      $ionicLoading.show();
+      $ionicPlatform.ready(function(){
         var options = {
           quality : 90,
           destinationType : Camera.DestinationType.DATA_URL,
@@ -71,15 +64,13 @@
         $cordovaCamera.getPicture(options).then(function(imageData) {
           vm.image = imageData;
           vm.imgURI = "data:image/jpeg;base64," + imageData;
+          $ionicLoading.hide();
         }, function(err) {
+          $ionicLoading.hide();
           alert("Não foi possível obter foto");
         });
-      }
-    });
-
-    function activate() {
+      });
     }
-
 
   }
 })();

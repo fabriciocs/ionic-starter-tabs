@@ -1,6 +1,6 @@
 angular.module('ionic').run(['$templateCache', function($templateCache) {
   $templateCache.put('auth/auth.html',
-    '<ion-view hide-back-button="true" view-title="Acesse"><ion-content><div class="padding"><button class="button button-block button-assertive" ng-click="vm.signIn()">Google</button></div><em>{{vm.firebaseUser | json}}</em> <em>{{vm.error | json}}</em></ion-content></ion-view>');
+    '<ion-view hide-back-button="true" view-title="Acesse"><ion-content><div class="padding"><button class="button button-block button-assertive" ng-click="vm.signIn()">Google</button></div></ion-content></ion-view>');
 }]);
 
 angular.module('ionic').run(['$templateCache', function($templateCache) {
@@ -15,5 +15,5 @@ angular.module('ionic').run(['$templateCache', function($templateCache) {
 
 angular.module('ionic').run(['$templateCache', function($templateCache) {
   $templateCache.put('map/map.html',
-    '<ion-view view-title="{{vm.title}}"><ion-content><div id="map"></div></ion-content></ion-view>');
+    '<ion-view view-title="Meus Envios"><ion-content><div id="map"></div></ion-content></ion-view>');
 }]);
