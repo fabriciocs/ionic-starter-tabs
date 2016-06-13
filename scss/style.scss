@@ -9,3 +9,12 @@ $stable:    #eff1ee !default;
 $dark:      #34495e !default;
 
 $base-background-color: $stable !default;
+
+.scroll {
+  height: 100%;
+}
+
+#map {
+  width: 100%;
+  height: 100%;
+}

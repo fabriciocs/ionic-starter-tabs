@@ -8,16 +8,9 @@
         'app.auth',
         'app.dashboard',
         'app.layout',
-        'app.notification',
-        'app.avengers',
-        'app.settings'
     ]);
 })();
-(function () {
-    'use strict';
 
-    angular.module('app.account', []);
-})();
 (function () {
     'use strict';
 
@@ -26,7 +19,7 @@
 (function () {
     'use strict';
 
-    angular.module('app.avengers', []);
+    angular.module('app.dashboard', []);
 })();
 (function () {
     'use strict';
@@ -39,11 +32,6 @@
 
 })();
 
-(function () {
-    'use strict';
-
-    angular.module('app.dashboard', []);
-})();
 (function() {
     'use strict';
 
@@ -52,56 +40,7 @@
 (function () {
     'use strict';
 
-    angular.module('app.notification', []);
-})();
-(function () {
-    'use strict';
-
-    angular.module('app.settings', []);
-})();
-(function () {
-    'use strict';
-
     angular.module('blocks.exception', []);
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.account')
-        .controller('Account', Account);
-
-    function Account() {
-        var vm = this;
-
-        activate();
-
-        function activate() { }
-    }
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.account')
-        .config(Configure);
-
-    Configure.$inject = ['$stateProvider'];
-
-    function Configure($stateProvider) {
-        $stateProvider
-            .state('tab.account', {
-                url: '/account',
-                views: {
-                    'tab-account': {
-                        templateUrl: 'account/account.html',
-                        controller: 'Account',
-                        controllerAs: 'vm'
-                    }
-                }
-            });
-    }
-
 })();
 (function () {
   'use strict';
@@ -182,61 +121,52 @@
     }
 
 })();
-(function() {
-'use strict';
-
-    angular
-        .module('app.avengers')
-        .controller('Avengers', Avengers);
-
-    Avengers.$inject = ['dataservice','currentAuth'];
-    function Avengers(dataservice, currentAuth) {
-        var vm = this;
-        vm.avengers = [];
-        vm.title = JSON.stringify(currentAuth);
-
-
-        activate();
-
-        function activate() {
-            return getAvengers().then(function() {
-                console.info('Activated Avengers View');
-            });
-        }
-
-        function getAvengers() {
-            return dataservice.getAvengers().then(function(data) {
-                vm.avengers = data;
-                return vm.avengers;
-            });
-        }
-
-    }
-})();
-
 (function () {
   'use strict';
 
   angular
-    .module('app.avengers')
+    .module('app.dashboard')
     .config(Configure);
 
   Configure.$inject = ['$stateProvider'];
 
   function Configure($stateProvider) {
     $stateProvider
-      .state('tab.avengers', {
-        url: '/avengers',
+      .state('tab.dashboard', {
+        url: '/dashboard',
         views: {
-          'tab-avengers': {
-            templateUrl: 'avengers/avengers.html',
-            controller: 'Avengers',
-            controllerAs: 'vm'
+          'tab-dashboard': {
+            templateUrl: 'dashboard/dashboard.html',
+            controller: 'Dashboard',
+            controllerAs: 'vm',
+            resolve: {
+              "currentAuth": ["AuthService", function(AuthService) {
+                return AuthService.ref().$requireSignIn();
+              }]
+            }
           }
         }
-      });
+      })
   }
 
+})();
+
+(function () {
+    'use strict';
+
+    angular
+        .module('app.dashboard')
+        .controller('Dashboard', Dashboard);
+
+    Dashboard.$inject = ['$q', 'currentAuth'];
+    function Dashboard($q, currentAuth) {
+        var vm = this;
+        activate();
+
+        function activate() {
+            
+        }
+    }
 })();
 
 (function () {
@@ -276,94 +206,6 @@
       })
 })();
 
-(function () {
-    'use strict';
-
-    angular
-        .module('app.core')
-        .factory('dataservice', dataservice);
-
-    dataservice.$inject = ['$http', '$state', '$q', 'exception'];
-    function dataservice($http, $state, $q, exception) {
-
-        var isPrimed = false;
-        var primePromise;
-
-        var service = {
-            getAvengersCast: getAvengersCast,
-            getAvengerCount: getAvengerCount,
-            getAvengers: getAvengers,
-            ready: ready
-        };
-
-        return service;
-
-        function getAvengers() {
-            return $http.get('avengers.json')
-                .then(getAvengersComplete)
-                .catch(function (message) {
-                    exception.catcher('XHR Failed for getAvengers')(message);
-                    $state.go('/tab/dashboard');
-                });
-
-            function getAvengersComplete(results, status, headers, config) {
-                return results.data.cast;
-            }
-        }
-
-        function getAvengerCount() {
-            var count = 0;
-            return getAvengersCast()
-                .then(getAvengersCastComplete)
-                .catch(exception.catcher('XHR Failed for getAvengerCount'));
-
-            function getAvengersCastComplete(data) {
-                count = data.length;
-                return $q.when(count);
-            }
-        }
-
-        function getAvengersCast() {
-            var cast = [
-                { name: 'Robert Downey Jr.', character: 'Tony Stark / Iron Man' },
-                { name: 'Chris Hemsworth', character: 'Thor' },
-                { name: 'Chris Evans', character: 'Steve Rogers / Captain America' },
-                { name: 'Mark Ruffalo', character: 'Bruce Banner / The Hulk' },
-                { name: 'Scarlett Johansson', character: 'Natasha Romanoff / Black Widow' },
-                { name: 'Jeremy Renner', character: 'Clint Barton / Hawkeye' },
-                { name: 'Gwyneth Paltrow', character: 'Pepper Potts' },
-                { name: 'Samuel L. Jackson', character: 'Nick Fury' },
-                { name: 'Paul Bettany', character: 'Jarvis' },
-                { name: 'Tom Hiddleston', character: 'Loki' },
-                { name: 'Clark Gregg', character: 'Agent Phil Coulson' }
-            ];
-            return $q.when(cast);
-        }
-
-        function prime() {
-            if (primePromise) {
-                return primePromise;
-            }
-
-            primePromise = $q.when(true).then(success);
-            return primePromise;
-
-            function success() {
-                isPrimed = true;
-                logger.info('Primed data');
-            }
-        }
-
-        function ready(nextPromises) {
-            var readyPromise = primePromise || prime();
-
-            return readyPromise
-                .then(function () { return $q.all(nextPromises); })
-                .catch(exception.catcher('"ready" function failed'));
-        }
-
-    }
-})();
 (function () {
   'use strict';
 
@@ -405,82 +247,6 @@
 })();
 
 (function () {
-  'use strict';
-
-  angular
-    .module('app.dashboard')
-    .config(Configure);
-
-  Configure.$inject = ['$stateProvider'];
-
-  function Configure($stateProvider) {
-    $stateProvider
-      .state('tab.dashboard', {
-        url: '/dashboard',
-        views: {
-          'tab-dashboard': {
-            templateUrl: 'dashboard/dashboard.html',
-            controller: 'Dashboard',
-            controllerAs: 'vm',
-            resolve: {
-              "currentAuth": ["AuthService", function(AuthService) {
-                return AuthService.ref().$requireSignIn();
-              }]
-            }
-          }
-        }
-      })
-  }
-
-})();
-
-(function () {
-    'use strict';
-
-    angular
-        .module('app.dashboard')
-        .controller('Dashboard', Dashboard);
-
-    Dashboard.$inject = ['$q', 'dataservice','currentAuth'];
-    function Dashboard($q, dataservice, currentAuth) {
-        var vm = this;
-        console.log(currentAuth);
-
-        vm.news = {
-            title: 'Marvel Avengers',
-            description: 'Marvel Avengers 2 is now in production!'
-        };
-        vm.avengerCount = 0;
-        vm.avengers = [];
-        vm.title = 'Dashboard';
-
-
-        activate();
-
-        function activate() {
-            var promises = [getAvengerCount(), getAvengersCast()];
-            return $q.all(promises).then(function() {
-                console.info('Activated Dashboard View');
-            });
-        }
-
-        function getAvengerCount() {
-            return dataservice.getAvengerCount().then(function(data) {
-                vm.avengerCount = data;
-                return vm.avengerCount;
-            });
-        }
-
-        function getAvengersCast() {
-            return dataservice.getAvengersCast().then(function(data) {
-                vm.avengers = data;
-                return vm.avengers;
-            });
-        }
-    }
-})();
-
-(function () {
     'use strict';
 
     angular
@@ -498,86 +264,6 @@
             })
     }
 
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.notification')
-        .config(Configure);
-
-    Configure.$inject = ['$stateProvider'];
-
-    function Configure($stateProvider) {
-        $stateProvider
-            .state('tab.settings-notification', {
-                url: '/settings/notification',
-                views: {
-                    'tab-settings': {
-                        templateUrl: 'notification/notification.html',
-                        controller: 'Notification',
-                        controllerAs: 'vm'
-                    }
-                }
-            });
-    }
-
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.notification')
-        .controller('Notification', Notification);
-
-    Notification.$inject = ['$scope'];
-    function Notification($scope) {
-        var vm = this;
-
-        activate();
-
-        function activate() { }
-    }
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.settings')
-        .config(Configure);
-
-    Configure.$inject = ['$stateProvider'];
-
-    function Configure($stateProvider) {
-        $stateProvider
-            .state('tab.settings', {
-                url: '/settings',
-                views: {
-                    'tab-settings': {
-                        templateUrl: 'settings/settings.html',
-                        controller: 'Settings',
-                        controllerAs: 'vm'
-                    }
-                }
-            });
-    }
-
-})();
-(function () {
-    'use strict';
-
-    angular
-        .module('app.settings')
-        .controller('Settings', Settings);
-
-    Settings.$inject = ['$scope'];
-    function Settings($scope) {
-        var vm = this;
-
-        activate();
-
-        function activate() { }
-    }
 })();
 (function () {
     'use strict';

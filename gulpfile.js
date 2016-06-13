@@ -93,40 +93,79 @@ gulp.task('templates', function () {
  * Dist
  */
 gulp.task('dist', ['sass', 'components', 'scripts', 'assets', 'templates'], function () {
-    return gulp.src('./app/index.html')
-        .pipe(g.inject(gulp.src('./www/css/components.min.css'), {
-            ignorePath: 'www',
-            addRootSlash: false,
-            starttag: '<!-- inject:components:{{ext}} -->',
-            addPrefix: ''
-        }))
+  return gulp.src('./app/index.html')
+    .pipe(g.inject(gulp.src('./www/css/components.min.css'), {
+      ignorePath: 'www',
+      addRootSlash: false,
+      starttag: '<!-- inject:components:{{ext}} -->',
+      addPrefix: ''
+    }))
 
-        .pipe(g.inject(gulp.src('./www/js/components.min.js'), {
-            ignorePath: 'www',
-            addRootSlash: false,
-            starttag: '<!-- inject:components:{{ext}} -->',
-            addPrefix: ''
-        }))
-        
-        .pipe(g.inject(gulp.src('./www/js/templates.min.js'), {
-            ignorePath: 'www',
-            addRootSlash: false,
-            starttag: '<!-- inject:templates:{{ext}} -->',
-            addPrefix: ''
-        }))
+    .pipe(g.inject(gulp.src('./www/js/components.min.js'), {
+      ignorePath: 'www',
+      addRootSlash: false,
+      starttag: '<!-- inject:components:{{ext}} -->',
+      addPrefix: ''
+    }))
 
-        .pipe(g.inject(gulp.src('./www/css/' + package.name + '.min.css'), {
-            ignorePath: 'www',
-            addRootSlash: false,
-            addPrefix: ''
-        }))
+    .pipe(g.inject(gulp.src('./www/js/templates.min.js'), {
+      ignorePath: 'www',
+      addRootSlash: false,
+      starttag: '<!-- inject:templates:{{ext}} -->',
+      addPrefix: ''
+    }))
 
-        .pipe(g.inject(gulp.src('./www/js/' + package.name + '.min.js'), {
-            ignorePath: 'www',
-            addRootSlash: false,
-            addPrefix: ''
-        }))
-        .pipe(gulp.dest('./www'));
+    .pipe(g.inject(gulp.src('./www/css/' + package.name + '.min.css'), {
+      ignorePath: 'www',
+      addRootSlash: false,
+      addPrefix: ''
+    }))
+
+    .pipe(g.inject(gulp.src('./www/js/' + package.name + '.min.js'), {
+      ignorePath: 'www',
+      addRootSlash: false,
+      addPrefix: ''
+    }))
+    .pipe(gulp.dest('./www'));
+});
+/**
+ * Dist
+ */
+gulp.task('dev', ['sass', 'components', 'scripts', 'assets', 'templates'], function () {
+  return gulp.src('./app/index.html')
+    .pipe(g.inject(gulp.src('./www/css/components.css'), {
+      ignorePath: 'www',
+      addRootSlash: false,
+      starttag: '<!-- inject:components:{{ext}} -->',
+      addPrefix: ''
+    }))
+
+    .pipe(g.inject(gulp.src('./www/js/components.js'), {
+      ignorePath: 'www',
+      addRootSlash: false,
+      starttag: '<!-- inject:components:{{ext}} -->',
+      addPrefix: ''
+    }))
+
+    .pipe(g.inject(gulp.src('./www/js/templates.js'), {
+      ignorePath: 'www',
+      addRootSlash: false,
+      starttag: '<!-- inject:templates:{{ext}} -->',
+      addPrefix: ''
+    }))
+
+    .pipe(g.inject(gulp.src('./www/css/' + package.name + '.css'), {
+      ignorePath: 'www',
+      addRootSlash: false,
+      addPrefix: ''
+    }))
+
+    .pipe(g.inject(gulp.src('./www/js/' + package.name + '.js'), {
+      ignorePath: 'www',
+      addRootSlash: false,
+      addPrefix: ''
+    }))
+    .pipe(gulp.dest('./www'));
 });
 
 /**

@@ -1,7 +1,7 @@
 {
-  "name": "avengers",
+  "name": "maiscidadao",
   "version": "0.0.1",
-  "description": "Avengers: An Ionic project and sqlite",
+  "description": "+Cidadão é um projeto que conecta as pessoas diretamente os seus prefeitos",
   "dependencies": {
     "gulp": "^3.5.6",
     "gulp-concat": "^2.2.0",

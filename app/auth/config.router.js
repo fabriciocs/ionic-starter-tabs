@@ -2,7 +2,7 @@
     'use strict';
 
     angular
-        .module('app.account')
+        .module('app.auth')
         .config(Configure);
 
     Configure.$inject = ['$stateProvider'];
