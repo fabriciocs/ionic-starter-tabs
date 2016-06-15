@@ -10,6 +10,12 @@
     var vm = this;
     var auth = $firebaseAuth();
     vm.signIn = signIn;
+    vm.signOut = signOut;
+
+
+    function signOut(){
+      auth.$signOut();
+    }
 
 
     activate();
