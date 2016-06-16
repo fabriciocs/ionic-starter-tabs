@@ -49,6 +49,13 @@
     function takePicture() {
       $ionicLoading.show();
       $ionicPlatform.ready(function(){
+        try{
+          var x = Camera;
+        }catch(err){
+          alert("Não foi possível iniciar a camera");
+          return;
+        }
+
         var options = {
           quality : 90,
           destinationType : Camera.DestinationType.DATA_URL,

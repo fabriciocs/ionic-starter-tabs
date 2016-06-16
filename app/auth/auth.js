@@ -5,16 +5,32 @@
     .module('app.auth')
     .controller('Auth', Auth);
 
-  Auth.$inject = ['$state', '$firebaseAuth','FIREBASE_CONFIG','$cordovaOauth', '$ionicLoading'];
-  function Auth($state, $firebaseAuth, FIREBASE_CONFIG, $cordovaOauth, $ionicLoading) {
+  Auth.$inject = ['$state', '$firebaseAuth','FIREBASE_CONFIG','$cordovaOauth', 'Message'];
+  function Auth($state, $firebaseAuth, FIREBASE_CONFIG, $cordovaOauth, Message) {
     var vm = this;
     var auth = $firebaseAuth();
+    vm.access = {};
     vm.signIn = signIn;
     vm.signOut = signOut;
-
+    vm.register = register;
 
     function signOut(){
       auth.$signOut();
+    }
+
+    function register(){
+      if(vm.access.password === vm.access.confirmPassword){
+        Message.wait("Fazendo Registro", auth.$createUserWithEmailAndPassword(vm.access.email, vm.access.password)
+          .then(function(firebaseUser) {
+            vm.firebaseUser = firebaseUser;
+            $state.transitionTo('tab.dashboard');
+          })
+          .catch(function(error) {
+            vm.error = error;
+            alert(error);
+          }));
+      }
+
     }
 
 
@@ -25,24 +41,13 @@
     function signIn() {
       vm.firebaseUser = null;
       vm.error = null;
-      $ionicLoading.show();
-      $cordovaOauth.google(FIREBASE_CONFIG.clientId, ["email"]).then(function(result) {
-        var credential = firebase.auth.GoogleAuthProvider.credential(result.id_token);
-        auth.$signInWithCredential(credential).then(function(firebaseUser) {
-          vm.firebaseUser = firebaseUser;
-          $ionicLoading.hide();
-          $state.transitionTo('tab.dashboard');
-        }).catch(function(error) {
-          vm.error = error;
-          $ionicLoading.hide();
-          alert(error);
-        });
-      }, function(error) {
-        m.error = error;
-        $ionicLoading.hide();
-        alert("Error -> " + error);
-      });
-      /**/
+      Message.wait("Fazendo Login",auth.$signInWithEmailAndPassword(vm.access.email, vm.access.password).then(function(firebaseUser) {
+        vm.firebaseUser = firebaseUser;
+        $state.transitionTo('tab.dashboard');
+      }).catch(function(error) {
+        vm.error = error;
+        alert(error);
+      }));
     }
   }
 })();

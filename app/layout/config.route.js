@@ -1,19 +1,24 @@
 (function () {
-    'use strict';
+  'use strict';
 
-    angular
-        .module('app.layout')
-        .config(Configure);
+  angular
+    .module('app.layout')
+    .config(Configure);
 
-    Configure.$inject = ['$stateProvider'];
+  Configure.$inject = ['$stateProvider'];
 
-    function Configure($stateProvider) {
-        $stateProvider
-            .state('tab', {
-                url: '/tab',
-                abstract: true,
-                templateUrl: 'layout/tabs.html'
-            })
-    }
+  function Configure($stateProvider) {
+    $stateProvider
+      .state('tab', {
+        url: '/tab',
+        abstract: true,
+        templateUrl: 'layout/tabs.html',
+        resolve: {
+          "currentAuth": ["AuthService", function(AuthService) {
+            return AuthService.ref().$waitForSignIn();
+          }]
+        }
+      })
+  }
 
 })();

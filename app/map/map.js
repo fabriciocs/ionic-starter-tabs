@@ -4,8 +4,8 @@
   angular
     .module('app.map')
     .controller('Map', Map);
-  Map.$inject = ['GeolocationService', '$firebaseArray','$ionicLoading', '$rootScope'];
-  function Map(GeolocationService, $firebaseArray, $ionicLoading, $rootScope) {
+  Map.$inject = ['GeolocationService', '$firebaseArray','$ionicLoading', '$rootScope', '$timeout'];
+  function Map(GeolocationService, $firebaseArray, $ionicLoading, $rootScope, $timeout) {
     var vm = this;
     var markers = [];
     $rootScope.activateMaps = activate;
@@ -20,9 +20,11 @@
       $ionicLoading.show();
     }
     function remakeMap(){
-      google.maps.event.trigger(vm.map, 'resize');
-      vm.map.setZoom(vm.map.getZoom() );
-      $ionicLoading.hide();
+      $timeout(function(){
+        google.maps.event.trigger(vm.map, 'resize');
+        vm.map.setZoom(vm.map.getZoom() );
+        $ionicLoading.hide();
+      });
     }
     function clearMarkers(){
       markers.forEach(function(marker){

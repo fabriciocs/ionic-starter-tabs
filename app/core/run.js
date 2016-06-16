@@ -5,9 +5,9 @@
     .module('app.core')
     .run(Run);
 
-  Run.$inject = ['$ionicPlatform','FIREBASE_CONFIG','$rootScope','$state'];
+  Run.$inject = ['$ionicPlatform','FIREBASE_CONFIG','$rootScope','$state', '$firebaseAuth'];
 
-  function Run($ionicPlatform, FIREBASE_CONFIG, $rootScope, $state) {
+  function Run($ionicPlatform, FIREBASE_CONFIG, $rootScope, $state, $firebaseAuth) {
     var service = {
       onReady: onReady
     };
@@ -15,6 +15,13 @@
     $ionicPlatform.ready(
       service.onReady()
     );
+
+
+    $rootScope.logout = function(){
+      $firebaseAuth().$signOut();
+      $state.go("tab.account-auth", {}, {reload: true});
+    };
+
 
     $rootScope.$on("$stateChangeError", function(event, toState, toParams, fromState, fromParams, error) {
       if (error === "AUTH_REQUIRED") {
@@ -34,6 +41,11 @@
         StatusBar.styleDefault();
       }
       firebase.initializeApp(FIREBASE_CONFIG);
+
+      $firebaseAuth().$onAuthStateChanged(function(user) {
+        $rootScope.isLogged = user;
+      });
+
     }
   }
 })();
