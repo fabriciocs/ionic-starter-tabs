@@ -9,6 +9,7 @@
   function Auth($state, $firebaseAuth, FIREBASE_CONFIG, $cordovaOauth, Message) {
     var vm = this;
     var auth = $firebaseAuth();
+	vm.isRegister = false;
     vm.access = {};
     vm.signIn = signIn;
     vm.signOut = signOut;
@@ -29,7 +30,9 @@
             vm.error = error;
             alert(error);
           }));
-      }
+      }else{
+		  alert("Senhas não conferem");
+	  }
 
     }
 
